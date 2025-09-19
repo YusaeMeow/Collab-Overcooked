@@ -1,0 +1,58 @@
+# Example configuration for custom API (DeepSeek, Claude, etc.)
+# Environment settings
+environment:
+  horizon: 12
+  order: "salad"
+  layout: "cramped_room"
+  max_steps: 400
+
+# Custom API agent configuration
+agents:
+  num_agents: 2
+  agent_0:
+    type: "custom_api"  # Custom API service
+    model: "deepseek-chat"
+    base_url: "https://api.deepseek.com/v1"
+    api_key: "your_deepseek_api_key"  # Or load from environment/config
+    temperature: 0.1
+    max_tokens: 512
+    timeout: 30
+    max_retries: 3
+    role: "Chef"
+  agent_1:
+    type: "custom_api"
+    model: "deepseek-reasoner"  # Different model for assistant
+    base_url: "https://api.deepseek.com/v1"
+    api_key: "your_deepseek_api_key"
+    temperature: 0.2
+    max_tokens: 1024  # More tokens for reasoning model
+    timeout: 45  # Longer timeout for reasoning
+    max_retries: 3
+    role: "Assistant"
+
+# Alternative configuration for Claude API
+# agents:
+#   num_agents: 2
+#   agent_0:
+#     type: "custom_api"
+#     model: "claude-3-sonnet-20240229"
+#     base_url: "https://api.anthropic.com/v1"
+#     api_key: "your_anthropic_api_key"
+#     temperature: 0.1
+#     max_tokens: 512
+#     role: "Chef"
+
+# Evaluation settings
+evaluation:
+  metrics:
+    - "f1_score"
+    - "similarity"
+    - "collaboration_initiate"
+  output_dir: "./results/custom_api"
+  save_trajectories: true
+
+# Logging settings
+logging:
+  level: "INFO"
+  save_logs: true
+  log_dir: "./logs/custom_api"

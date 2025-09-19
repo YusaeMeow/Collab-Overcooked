@@ -1,0 +1,30 @@
+name: collab-overcooked
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - pip
+  - mpi4py=3.1.4
+  - pip:
+    - openai==1.54.3
+    - blobfile
+    - fairscale
+    - pandas
+    - scipy
+    - matplotlib
+    - seaborn==0.9.0
+    - protobuf==3.20.3
+    - rich==13.5.2
+    - fire
+    - tiktoken
+    - transformers
+    - dtw-python
+    - sentencepiece
+    - scikit-learn
+    - plotly
+    - aiohttp
+    - gym
+    - httpx==0.27.2
+    - websocket
+    - websockets

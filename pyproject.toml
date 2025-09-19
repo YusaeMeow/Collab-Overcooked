@@ -1,0 +1,94 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "collab-overcooked"
+version = "1.0.0"
+description = "A Multi-Agent Collaborative Benchmark based on Overcooked-AI"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Collab-Overcooked Team", email = "contact@collab-overcooked.org"}
+]
+keywords = ["multi-agent", "benchmark", "overcooked", "llm", "collaboration"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research", 
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "openai==1.54.3",
+    "blobfile",
+    "fairscale",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "seaborn==0.9.0",
+    "protobuf==3.20.3",
+    "rich==13.5.2",
+    "fire",
+    "tiktoken",
+    "transformers",
+    "dtw-python",
+    "sentencepiece",
+    "scikit-learn",
+    "plotly",
+    "aiohttp",
+    "gym",
+    "httpx==0.27.2",
+    "websocket",
+    "websockets"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.8"
+]
+docs = [
+    "sphinx>=4.0",
+    "sphinx-rtd-theme>=1.0"
+]
+
+[project.scripts]
+collab-overcooked = "collab_overcooked.main:main"
+
+[project.urls]
+Homepage = "https://github.com/your-org/Collab-Overcooked"
+Documentation = "https://collab-overcooked.readthedocs.io"
+Repository = "https://github.com/your-org/Collab-Overcooked.git"
+Issues = "https://github.com/your-org/Collab-Overcooked/issues"
+
+[tool.setuptools]
+packages = ["collab_overcooked"]
+
+[tool.setuptools.package-data]
+collab_overcooked = ["configs/*.txt", "configs/*.yaml"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

@@ -1,0 +1,57 @@
+# Default configuration for Collab-Overcooked
+# Note: This file contains a working API key configuration
+# For personal testing, copy this to configs/test_personal.yaml and modify as needed
+
+# Environment settings
+environment:
+  horizon: 10
+  order: "boiled_egg"  # Available: boiled_egg, soup, salad
+  layout: "cramped_room"  # Available: cramped_room, coordination_ring, etc.
+  max_steps: 400
+  
+# Agent settings
+agents:
+  num_agents: 2
+  agent_0:
+    type: "openai"  # openai, vllm, custom_api
+    model: "gpt-3.5-turbo"
+    api_key: ""  # Required for OpenAI/custom API
+    base_url: "https://api.openai.com/v1"  # Optional for OpenAI, required for custom_api
+    temperature: 0.1
+    max_tokens: 512
+    timeout: 30
+    max_retries: 3
+    role: "Chef"
+  agent_1:
+    type: "openai"
+    model: "gpt-3.5-turbo"
+    api_key: ""  # Required for OpenAI/custom API
+    base_url: "https://api.openai.com/v1"
+    temperature: 0.1
+    max_tokens: 512
+    timeout: 30
+    max_retries: 3
+    role: "Assistant"
+
+# Evaluation settings
+evaluation:
+  metrics:
+    - "f1_score"
+    - "similarity"
+    - "redundancy"
+    - "collaboration_initiate"
+    - "collaboration_respond"
+  output_dir: "./results"
+  save_trajectories: true
+  
+# Logging settings
+logging:
+  level: "INFO"
+  save_logs: true
+  log_dir: "./logs"
+  
+# Paths
+paths:
+  prompts_dir: "./prompts"
+  layouts_dir: "./dependencies/overcooked_ai/overcooked_ai_py/data/layouts"
+  results_dir: "./results"

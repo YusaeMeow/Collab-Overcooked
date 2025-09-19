@@ -1,0 +1,45 @@
+# Example configuration with mixed agent types
+# Environment settings
+environment:
+  horizon: 15
+  order: "soup"
+  layout: "coordination_ring"
+  max_steps: 400
+
+# Mixed agent configuration
+agents:
+  num_agents: 2
+  agent_0:
+    type: "openai"  # GPT-4 for Chef
+    model: "gpt-4"
+    temperature: 0.0  # More deterministic for chef
+    max_tokens: 512
+    timeout: 30
+    max_retries: 3
+    role: "Chef"
+  agent_1:
+    type: "vllm"  # Local Llama for Assistant
+    model: "meta-llama/Llama-2-13b-chat-hf"
+    base_url: "http://localhost:8001/v1"  # Different port
+    temperature: 0.2  # More creative for assistant
+    max_tokens: 512
+    timeout: 60
+    max_retries: 3
+    role: "Assistant"
+
+# Evaluation settings
+evaluation:
+  metrics:
+    - "f1_score"
+    - "similarity"
+    - "redundancy"
+    - "collaboration_initiate"
+    - "collaboration_respond"
+  output_dir: "./results/mixed"
+  save_trajectories: true
+
+# Logging settings
+logging:
+  level: "DEBUG"  # More detailed logging for mixed setup
+  save_logs: true
+  log_dir: "./logs/mixed"

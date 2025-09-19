@@ -1,74 +1,183 @@
 <div align="center">
   <h1> Collab-Overcooked </h1>
-  
-
+  <p><em>A Multi-Agent Collaborative Benchmark based on Overcooked-AI</em></p>
 </div>
 
-We propose a new LLM-powered Multi-Agent System (LLM-MAS) benchmark, Collab-Overcooked, built on the popular Overcooked-AI game with more applicable and challenging tasks in interactive environments. Collab-Overcooked extends existing benchmarks from two novel perspectives. First, it provides a multi-agent framework supporting diverse tasks and objectives and encourages collaboration through natural language communication. Second, it introduces a spectrum of process-oriented evaluation metrics to assess the fine-grained collaboration capabilities of different LLM agents, a dimension often overlooked in prior work.
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://python.org)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](docs/)
 
-## ⚠️ Upcoming Code Restructure for Improved Clarity
-We're preparing to restructure our code to significantly improve its readability and logical organization (expected to take 1-2 months). This update is designed to make it much simpler for researchers to follow and understand.
+We propose a new LLM-powered Multi-Agent System (LLM-MAS) benchmark, **Collab-Overcooked**, built on the popular Overcooked-AI game with more applicable and challenging tasks in interactive environments. Collab-Overcooked extends existing benchmarks from two novel perspectives:
 
-Important points for you:
+1. **Multi-agent Framework**: Supports diverse tasks and objectives while encouraging collaboration through natural language communication
+2. **Process-oriented Evaluation**: Introduces comprehensive metrics to assess fine-grained collaboration capabilities of different LLM agents
 
-- No impact on current experiments: This update will not affect any experimental results. If you're currently testing with Collab-Overcooked, you can continue using it without interruption.
+## 🎯 Key Features
 
-- For incremental work: If you plan to build incrementally on Collab-Overcooked and have questions about the current code, please pay close attention to our upcoming updates.
+- **Multiple Cooking Tasks**: Boiled egg, soup, salad, and more
+- **Diverse Kitchen Layouts**: Various configurations requiring different collaboration strategies  
+- **LLM Agent Support**: Works with GPT models, local LLMs, and custom agents
+- **Comprehensive Evaluation**: F1 score, similarity, redundancy, and collaboration metrics
+- **Easy Installation**: One-command setup with conda environment
+- **Flexible Configuration**: YAML-based configuration system
+- **Rich Documentation**: Complete guides and API reference
 
-We believe these changes will greatly enhance your experience working with our codebase!
+## 🚀 Quick Start
 
-## Getting Started
+### Installation
 
-### Install
-We recommend using the anaconda management environment. Python 3.8 is recommended for this project.  
-- Install requirements
-    - Directly do:
-        ```
-        conda create -n collab-overcooked python=3.8
-        conda activate collab-overcooked
+#### Option 1: Automatic Installation (Recommended)
 
-        pip install -r requirements.txt
-        conda install mpi4py==3.1.4  # pip install often fails
-        ```
+```bash
+git clone https://github.com/your-org/Collab-Overcooked.git
+cd Collab-Overcooked
+bash scripts/install.sh
+```
 
-- Install the game environment `overcooked_ai` locally.
-    ```
-    cd ./lib/overcooked_ai
-    pip install -e .
-    ```
-    Notes: [Overcooked-AI](https://github.com/HumanCompatibleAI/overcooked_ai) is a benchmark environment for fully cooperative human-AI task performance, based on the wildly popular video game Overcooked. We made certain modifications based on Overcooked-AI.
+#### Option 2: Manual Installation
+
+```bash
+git clone https://github.com/your-org/Collab-Overcooked.git
+cd Collab-Overcooked
+
+# Create conda environment
+conda env create -f environment.yml
+conda activate collab-overcooked
+
+# Install dependencies
+cd dependencies/overcooked_ai
+pip install -e .
+cd ../..
+
+# Install main package
+pip install -e .
+```
+
+### Configuration
+
+1. **Set up API configuration**:
+   Copy and edit the configuration file:
+   ```bash
+   cp configs/default.yaml configs/test_personal.yaml
+   # Edit configs/test_personal.yaml and add your API key
+   ```
+
+2. **Customize configuration** (optional):
+   Edit `configs/test_personal.yaml` to modify settings and add your API key
 
 ### Quick Test
-The easiest way to test whether the environment is installed correctly is to use gpt-3.5-turbo to test after filling in the openai api secret key. 
-- Fill in the OpenAI API key at `Collab-Overcooked/src/openai_key.txt`
-- Run the following commands
-  ```
-  cd Collab-Overcooked/src
-  python main.py --horizon 3 --order boiled_egg
-  ```
-If you can output the environmental visualization map normally, the agents' normal output content, and run through 3 time steps without any errors, then your environment and agent configuration are successful. This will take you about 1.5 minutes, depending on the speed of your connection to OpenAI.
 
-### Configure the Open-source LLMs
-We recommend using [vLLM](https://github.com/vllm-project/vllm) for local deployment of open-source LLMs. 
+Run a simple test to verify installation:
 
-### Evaluation
-The evaluation scripts are provided in the "Collab-Overcooked/src" folder. The evaluation process consists of three sequential scripts:
-- **evaluation.py**: Evaluates the environment's output, calculates the metrics for each task, and stores the results in the corresponding task folder.
-- **organize_result.py**: Summarizes the metrics of each task into the `statistics_data.csv` file.
-- **convert_result.py**: Computes the metrics for each complexity level and stores the results in the `converted_data.csv` file.
+```bash
+bash scripts/quick_test.sh
+```
 
-The final evaluation results are stored in `converted_data.csv`, with the following key fields:
-- **mean_f1_agent_*:** The F1 score for agent * computed using the TES function, considering both correctly matched actions and redundant actions.
-- **mean_similarity_agent_*:** The similarity between the actions generated by agent * and the RATs (Reference Action Templates).
-- **mean_redundancy_agent_*:** The redundancy between the actions generated by agent * and the RATs.
-- **initiate_collaboration:** The ability of the LLM-MAS (Multi-Agent System) to initiate collaboration.
-- **respond_collaboration:** The ability of the LLM-MAS to respond to collaboration.
+Or manually:
 
-## Modify the Environment
-The environment settings and logic are stored in the `Collab-Overcooked/lib/overcooked_ai` folder. Layout files are stored in the `data/layouts` folder, while the environment logic is in the `mdp` folder. 
+```bash
+conda activate collab-overcooked
+collab-overcooked --horizon 3 --order boiled_egg
+```
 
-- To add more tasks (such as additional recipes or ingredients), you only need to modify the corresponding layout files.
-- If you need to add new interactive elements, ensure that you update the environment logic accordingly.
+This runs a 3-step collaboration scenario between two GPT agents making a boiled egg.
+
+## 📖 Documentation
+
+- **[Installation Guide](docs/installation.md)**: Detailed installation instructions
+- **[Usage Guide](docs/usage.md)**: Comprehensive usage examples and tutorials  
+- **[API Reference](docs/api_reference.md)**: Complete API documentation
+
+## 🔧 Usage Examples
+
+### Basic Usage
+
+```bash
+# Run a simple experiment
+collab-overcooked --horizon 10 --order soup --layout cramped_room
+
+# Run evaluation pipeline
+bash scripts/run_evaluation.sh
+```
+
+### Python API
+
+```python
+from collab_overcooked import main
+from collab_overcooked.evaluation import evaluate_performance
+
+# Run experiment programmatically
+results = main()
+
+# Custom evaluation
+eval_config = {
+    "tasks": ["boiled_egg", "soup"],
+    "layouts": ["cramped_room"],
+    "num_runs": 5,
+    "metrics": ["f1_score", "collaboration_initiate"]
+}
+
+results = evaluate_performance(eval_config)
+```
+
+### Local LLM Support
+
+Configure local LLMs using [vLLM](https://github.com/vllm-project/vllm):
+
+```yaml
+agents:
+  agent_0:
+    type: "local_llm"
+    model_path: "/path/to/your/model"
+    temperature: 0.1
+```
+
+## 📊 Evaluation
+
+### Automated Evaluation
+
+```bash
+bash scripts/run_evaluation.sh
+```
+
+This runs the complete evaluation pipeline:
+
+1. **evaluation.py**: Calculates metrics for each task
+2. **organize_result.py**: Summarizes results into `statistics_data.csv`  
+3. **convert_result.py**: Computes complexity-level metrics in `converted_data.csv`
+
+### Key Metrics
+
+- **F1 Score**: Action accuracy using TES function
+- **Similarity**: Comparison with Reference Action Templates (RATs)
+- **Redundancy**: Unnecessary action detection
+- **Collaboration Initiate**: Ability to start collaboration
+- **Collaboration Respond**: Ability to respond to collaboration
+
+## 🛠️ Customization
+
+### Adding New Tasks
+
+1. Create layout files in `dependencies/overcooked_ai/overcooked_ai_py/data/layouts/`
+2. Update configuration files
+3. Modify evaluation scripts if needed
+
+### Custom Agents
+
+```python
+from collab_overcooked.agents import BaseAgent
+
+class CustomAgent(BaseAgent):
+    def get_action(self, state, legal_actions):
+        # Your custom logic
+        return selected_action
+```
+
+### Environment Modification
+
+The environment logic is in `dependencies/overcooked_ai/`. Modify:
+- Layout files in `data/layouts/` for new recipes/ingredients
+- Environment logic in `mdp/` for new interactive elements
 
 
 ## Reference

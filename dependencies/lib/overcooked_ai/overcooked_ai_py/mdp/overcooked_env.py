@@ -130,7 +130,7 @@ class OvercookedEnv(object):
         self.reset()
         return successor_state, done
 
-    def run_agents(self, agent_pair, include_final_state=False, display=False, display_until=np.Inf):
+    def run_agents(self, agent_pair, include_final_state=False, display=False, display_until=np.inf):
         """
         Trajectory returned will a list of state-action pairs (s_t, joint_a_t, r_t, done_t).
         """
@@ -162,7 +162,7 @@ class OvercookedEnv(object):
         print(trajectory)
         return np.array(trajectory), self.t, self.cumulative_sparse_rewards, self.cumulative_shaped_rewards
     
-    def my_run_agents(self, agent_pair, include_final_state=False, display=False, display_until=np.Inf):
+    def my_run_agents(self, agent_pair, include_final_state=False, display=False, display_until=np.inf):
         assert self.cumulative_sparse_rewards == self.cumulative_shaped_rewards == 0, \
             "Did not reset environment before running agents"
         trajectory = []
@@ -191,7 +191,7 @@ class OvercookedEnv(object):
             trajectory.append((s_tp1, (None, None), 0, True))
         return trajectory, self.t, self.cumulative_sparse_rewards, self.cumulative_shaped_rewards
         
-    def get_rollouts(self, agent_pair, num_games, display=False, final_state=False, agent_idx=0, reward_shaping=0.0, display_until=np.Inf, info=True):
+    def get_rollouts(self, agent_pair, num_games, display=False, final_state=False, agent_idx=0, reward_shaping=0.0, display_until=np.inf, info=True):
         """
         Simulate `num_games` number rollouts with the current agent_pair and returns processed 
         trajectories.
@@ -246,7 +246,7 @@ class OvercookedEnv(object):
         trajectories = {k: np.array(v) for k, v in trajectories.items()}
         return trajectories
     
-    def my_get_rollouts(self, agent_pair, num_games, display=False, final_state=False, agent_idx=0, reward_shaping=0.0, display_until=np.Inf, info=True):
+    def my_get_rollouts(self, agent_pair, num_games, display=False, final_state=False, agent_idx=0, reward_shaping=0.0, display_until=np.inf, info=True):
         """
         Simulate `num_games` number rollouts with the current agent_pair and returns processed 
         trajectories.

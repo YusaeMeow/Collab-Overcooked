@@ -71,7 +71,7 @@ def get_intersect_counter(player, teammate, mdp, mlam):
     lis = [] 
     all_counters = mdp.get_counter_locations() 
     for counter in all_counters: 
-        motion_goals = mlam._get_ml_actions_for_positions([counter])        
+        motion_goals = mlam.ml_action_manager._get_ml_actions_for_positions([counter])        
         if motion_goals == []: 
             continue 
         mark_player, mark_teammate = False, False
@@ -180,7 +180,7 @@ def find_path(start_pos_and_or, other_pos_and_or, goal, terrain_mtx):
     
     # no available plans. 
     if last_node is None: 
-        return None, np.Inf 
+        return None, np.inf 
     else: 
         previous_node = last_node        
         while (previous_node.parent is not None) and (previous_node.parent != start_node): 

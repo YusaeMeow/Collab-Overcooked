@@ -144,22 +144,48 @@ src/GARBAGE
 backups/
 bc/
 
-# ingore files
+# Collab-Overcooked specific
+configs/openai_key.txt
+configs/personal_api_key.txt
+configs/test_personal.yaml
+configs/*_personal.yaml
+configs/*_private.yaml
+configs/*_key.txt
+configs/*_keys.txt
+logs/
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Evaluation outputs
+statistics_data.csv
+converted_data.csv
+custom_results/
+test_results/
+
+# Model files (if storing locally)
 models/
 baseline_models/
+checkpoints/
 
+# Experiment tracking
 wandb/
 experiments/ 
 history/
 results/
 
-roadmap.md
+# Data files (large datasets)
+data/large_datasets/
 
-
-src/batch_run.sh
-src/batch_run.sh
-
-
+# Cache files
 src/embedding_cache.json
 
-
+# Misc
+roadmap.md
+src/batch_run.sh
