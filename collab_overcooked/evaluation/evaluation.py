@@ -68,7 +68,7 @@ if __name__ == '__main__':
     parser.add_argument('--log_dir', type=str, default='eval_result', help='dir to save result')
     parser.add_argument('--debug', type=boolean_argument, default=True, help='debug mode')
     parser.add_argument('--order', type=str,default='AUTO', help='1 task order name, "AUTO" represents automatic recognition')
-    parser.add_argument('--recipe_dir', type=str, default='prompts/recipe', help='The dir of the recipe and reference')
+    parser.add_argument('--recipe_dir', type=str, default='collab_overcooked/prompts/recipe', help='The dir of the recipe and reference')
 
     #
     parser.add_argument('--save_dir', type=str, default='eval_result', help='save directory of LLM statistics')

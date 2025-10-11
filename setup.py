@@ -58,7 +58,7 @@ setup(
     },
     include_package_data=True,
     package_data={
-        "collab_overcooked": ["configs/*.txt", "configs/*.yaml"],
+        "collab_overcooked": ["configs/*.txt", "configs/*.yaml", "prompts/**/*.txt"],
     },
     zip_safe=False,
 )

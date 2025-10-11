@@ -299,7 +299,6 @@ class Module:
     def _handle_chat_model(self, messages, temperature):
         """Handle all chat models (GPT, DeepSeek, vLLM, etc.)"""
         client = self._get_client()
-        
         # For vLLM and local models, use full model path
         model_name = self.model
         if not ("gpt" in self.model or "deepseek" in self.model.lower()):
@@ -310,7 +309,6 @@ class Module:
             messages=messages,
             temperature=temperature,
         )
-        
         time.sleep(0.5)  # Rate limiting
         return response
 

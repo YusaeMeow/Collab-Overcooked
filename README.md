@@ -44,12 +44,7 @@ cd Collab-Overcooked
 conda env create -f environment.yml
 conda activate collab-overcooked
 
-# Install dependencies
-cd dependencies/overcooked_ai
-pip install -e .
-cd ../..
-
-# Install main package
+# Install main package (includes all dependencies)
 pip install -e .
 ```
 

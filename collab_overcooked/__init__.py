@@ -2,6 +2,16 @@
 Collab-Overcooked: A Multi-Agent Collaborative Benchmark based on Overcooked-AI
 """
 
+import os
+import sys
+
+# Add overcooked_ai_py to Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+overcooked_ai_path = os.path.join(project_root, "dependencies", "overcooked_ai")
+if overcooked_ai_path not in sys.path:
+    sys.path.insert(0, overcooked_ai_path)
+
 __version__ = "1.0.0"
 __author__ = "Collab-Overcooked Team"
 

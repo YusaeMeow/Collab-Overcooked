@@ -20,7 +20,7 @@ from rich import print as rprint
 from .modules import if_two_sentence_similar_meaning
 
 cwd = os.getcwd()
-PROMPT_DIR = os.path.join(cwd, "prompts")
+PROMPT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "prompts")
 
 NAME_TO_ACTION = {
     "NORTH": Direction.NORTH,
@@ -672,12 +672,9 @@ class LLMAgents(LLMPair):
             lis_actions = self.mdp.get_valid_actions(state.players[self.agent_index])
             # chosen_action =lis_actions[np.random.randint(0,len(lis_actions))]
             chosen_action = (0, 0)
-            if pkg_resources.get_distribution("overcooked_ai").version == "1.1.0":
-                self.prev_state = state
-                return chosen_action, {}
-            elif pkg_resources.get_distribution("overcooked_ai").version == "0.0.1":
-                self.prev_state = state
-                return chosen_action, ""
+            # Use version 0.0.1 logic (from dependencies/overcooked_ai)
+            self.prev_state = state
+            return chosen_action, ""
         else:
             possible_motion_goals = self.find_motion_goals(state)
             current_motion_goal, chosen_action = self.choose_motion_goal(
@@ -709,20 +706,10 @@ class LLMAgents(LLMPair):
                         Action.STAY,
                         Action.INTERACT,
                     ]:
-                        if (
-                            pkg_resources.get_distribution("overcooked_ai").version
-                            == "1.1.0"
-                        ):
-                            new_state, _ = self.mlam.mdp.get_state_transition(
-                                state, j_a
-                            )
-                        elif (
-                            pkg_resources.get_distribution("overcooked_ai").version
-                            == "0.0.1"
-                        ):
-                            new_state, _, _ = self.mlam.mdp.get_state_transition(
-                                state, j_a
-                            )
+                        # Use version 0.0.1 logic (from dependencies/overcooked_ai)
+                        new_state, _, _ = self.mlam.mdp.get_state_transition(
+                            state, j_a
+                        )
                         if (
                             new_state.players_pos_and_or
                             != self.prev_state.players_pos_and_or
@@ -744,15 +731,13 @@ class LLMAgents(LLMPair):
 
         # print(f'ml_action = {self.current_ml_action}')
         # print(f'P{self.agent_index} : {Action.to_char(chosen_action)}')
-        if pkg_resources.get_distribution("overcooked_ai").version == "1.1.0":
-            return chosen_action, {}
-        elif pkg_resources.get_distribution("overcooked_ai").version == "0.0.1":
-            if "pickup" in self.current_ml_action:
-                return chosen_action, self.parse_action_params[0]
-            elif any(s in self.current_ml_action for s in self.mdp.interact_actions):
-                return chosen_action, "[START]"
-            else:
-                return chosen_action, ""
+        # Use version 0.0.1 logic (from dependencies/overcooked_ai)
+        if "pickup" in self.current_ml_action:
+            return chosen_action, self.parse_action_params[0]
+        elif any(s in self.current_ml_action for s in self.mdp.interact_actions):
+            return chosen_action, "[START]"
+        else:
+            return chosen_action, ""
 
     # Parse action as function(parms1,parms2)
     def parse_params_in_action(self, action: str, need_output=False):

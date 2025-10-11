@@ -19,13 +19,7 @@ echo "Activating environment..."
 eval "$(conda shell.bash hook)"
 conda activate collab-overcooked
 
-# Install overcooked_ai dependency
-echo "Installing overcooked_ai dependency..."
-cd dependencies/lib/overcooked_ai
-pip install -e .
-cd ../../..
-
-# Install the main package in development mode
+# Install the main package in development mode (includes all dependencies)
 echo "Installing Collab-Overcooked in development mode..."
 pip install -e .
 

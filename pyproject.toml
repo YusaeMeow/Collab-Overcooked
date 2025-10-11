@@ -50,13 +50,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = [
-    "pytest>=6.0",
-    "pytest-cov>=2.0",
-    "black>=21.0",
-    "flake8>=3.8",
-    "mypy>=0.8"
-]
 docs = [
     "sphinx>=4.0",
     "sphinx-rtd-theme>=1.0"
@@ -77,18 +70,3 @@ packages = ["collab_overcooked"]
 [tool.setuptools.package-data]
 collab_overcooked = ["configs/*.txt", "configs/*.yaml"]
 
-[tool.black]
-line-length = 88
-target-version = ['py38']
-
-[tool.mypy]
-python_version = "3.8"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]

@@ -38,7 +38,7 @@ else:
 
 
 gpt4_key_file = os.path.join(cwd, "openai_key.txt")
-REFERENCE_DIR = os.path.join(cwd, "prompts/reference")
+REFERENCE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "prompts/reference")
 
 
 EMBEDDING_MODEL = "text-embedding-3-small"

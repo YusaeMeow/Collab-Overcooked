@@ -43,11 +43,8 @@ except ImportError:
     print("PyYAML not installed. Install with: pip install PyYAML")
     yaml = None
 
-import importlib_metadata
-VERSION = importlib_metadata.version("overcooked_ai")
 cwd = os.getcwd()
-PROMPT_DIR = os.path.join(cwd, "prompts")
-print(f'\n----This overcook version is {VERSION}----\n')
+PROMPT_DIR = os.path.join(os.path.dirname(__file__), "prompts")
 
 from overcooked_ai_py.mdp.overcooked_mdp import OvercookedGridworld, OvercookedState
 from overcooked_ai_py.mdp.overcooked_env import OvercookedEnv

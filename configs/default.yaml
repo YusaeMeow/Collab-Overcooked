@@ -52,6 +52,6 @@ logging:
   
 # Paths
 paths:
-  prompts_dir: "./prompts"
+  prompts_dir: "./collab_overcooked/prompts"
   layouts_dir: "./dependencies/overcooked_ai/overcooked_ai_py/data/layouts"
   results_dir: "./results"

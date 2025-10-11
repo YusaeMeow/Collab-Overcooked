@@ -14,7 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-# lib/
+lib/
 lib64/
 parts/
 sdist/
@@ -22,9 +22,9 @@ var/
 wheels/
 pip-wheel-metadata/
 share/python-wheels/
-# *.egg-info/
+*.egg-info/
 .installed.cfg
-# *.egg
+*.egg
 MANIFEST
 
 # PyInstaller

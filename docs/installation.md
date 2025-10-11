@@ -42,14 +42,7 @@ conda env create -f environment.yml
 conda activate collab-overcooked
 ```
 
-3. Install the overcooked_ai dependency:
-```bash
-cd dependencies/overcooked_ai
-pip install -e .
-cd ../..
-```
-
-4. Install the main package:
+3. Install the main package (includes all dependencies):
 ```bash
 pip install -e .
 ```

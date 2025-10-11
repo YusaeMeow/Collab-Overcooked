@@ -182,7 +182,7 @@ class CollaborativeAgent:
         self,
         agent_config: Dict[str, Any],
         role: str = "Chef",  # Chef or Assistant
-        prompts_dir: str = "./prompts"
+        prompts_dir: str = "./collab_overcooked/prompts"
     ):
         """
         Initialize collaborative agent
@@ -345,7 +345,7 @@ class CollaborativeAgent:
 def create_agent(
     agent_config: Dict[str, Any],
     role: str = "Chef",
-    prompts_dir: str = "./prompts"
+    prompts_dir: str = "./collab_overcooked/prompts"
 ) -> CollaborativeAgent:
     """
     Factory function to create collaborative agents
