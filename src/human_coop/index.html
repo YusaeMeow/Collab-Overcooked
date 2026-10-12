@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Collab-Overcooked · Human + Agent</title>
+<style>
+:root{color-scheme:dark;--bg:#121a20;--panel:#1d2931;--muted:#a6bac4;--ink:#edf5f7;--accent:#f3b759}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px system-ui,sans-serif}
+main{max-width:1140px;margin:auto;padding:32px 24px}header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+h1{font-size:26px;margin:0}h2{font-size:17px;margin:0 0 12px}p{color:var(--muted);line-height:1.6;margin:8px 0}
+.badge{border:1px solid #435762;border-radius:20px;padding:8px 14px;font-size:13px}.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:20px}
+.panel{background:var(--panel);border:1px solid #30424c;border-radius:16px;padding:20px}.metrics{display:flex;gap:24px;margin-bottom:18px}.metric span{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1px}.metric strong{font-size:23px}
+canvas{display:block;width:100%;aspect-ratio:1;background:#17232a;border-radius:10px;outline:none}canvas:focus-visible{outline:3px solid var(--accent)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}button,select{font:inherit;color:var(--ink);background:#30434e;border:1px solid #516773;border-radius:9px;padding:10px 14px}button{cursor:pointer}button.primary{background:var(--accent);color:#17232a;border-color:var(--accent);font-weight:650}button:disabled{opacity:.5;cursor:default}select{width:100%;margin:8px 0 12px}label{display:block;font-size:13px;color:var(--muted)}
+kbd{background:#30434e;border-radius:5px;padding:3px 7px;font:13px monospace;color:var(--ink)}.instructions{margin:20px 0;padding-top:18px;border-top:1px solid #344852}.legend{display:flex;gap:20px;font-size:13px;color:var(--muted);margin-top:12px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}.recipe{white-space:pre-wrap;color:#dce8ed;font:14px/1.7 system-ui;max-height:220px;overflow:auto}.status{min-height:26px;margin-top:12px;color:var(--accent)}.inventory{font-size:14px;padding-top:12px;border-top:1px solid #344852;margin-top:16px}
+.pad{display:grid;grid-template-columns:repeat(3,44px);gap:5px;justify-content:center;margin-top:12px}.pad button{padding:10px;touch-action:none}.pad [data-direction="up"]{grid-row:1;grid-column:2}.pad [data-direction="left"]{grid-row:2;grid-column:1}.pad [data-direction="down"]{grid-row:2;grid-column:2}.pad [data-direction="right"]{grid-row:2;grid-column:3}footer{margin-top:20px;font-size:12px;color:var(--muted)}
+@media(max-width:760px){main{padding:20px 12px}.layout{grid-template-columns:1fr}header{align-items:flex-start}.badge{white-space:nowrap}h1{font-size:20px}}
+.hands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}.hand{min-width:0;padding:10px 12px;background:#17232a;border:1px solid #435762;border-radius:10px;border-left:4px solid var(--accent)}.hand.agent{border-left-color:#7dc8db}.hand span{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}.hand strong{display:block;font-size:16px;overflow-wrap:anywhere}.hand.empty strong{color:var(--muted);font-weight:400}</style>
+</head>
+<body><main>
+<header><div><h1>Collab-Overcooked</h1><p>One kitchen. You and an agent teammate.</p></div><span id="connection" class="badge" role="status">Connecting…</span></header>
+<div class="layout"><section class="panel" aria-label="Game">
+<div class="metrics"><div class="metric"><span>Score</span><strong id="score">0</strong></div><div class="metric"><span>Step</span><strong id="step">0</strong></div><div class="metric"><span>Session</span><strong id="mode">Paused</strong></div></div>
+<div class="hands" aria-label="Held items"><div id="human-hand" class="hand empty"><span>You · 当前手持</span><strong id="human-item">空手 / Empty</strong></div><div id="agent-hand" class="hand agent empty"><span>Agent · 当前手持</span><strong id="agent-item">空手 / Empty</strong></div></div><canvas id="game" width="650" height="650" tabindex="0" aria-label="Kitchen. Use arrow keys or WASD to move, Space to interact, E to start an appliance."></canvas>
+<div class="legend"><span><i class="dot" style="background:#f3b759"></i>You</span><span><i class="dot" style="background:#7dc8db"></i>Agent</span></div>
+<div class="controls"><button id="start" class="primary" disabled>Start game</button><button id="reset" disabled>New game</button></div>
+<div class="status" id="status" role="status" aria-live="polite">The game starts paused.</div>
+</section><aside class="panel">
+<h2>Kitchen controls</h2><p id="role">Waiting for your player assignment.</p>
+<label for="ingredient">Ingredient to take from the dispenser</label><select id="ingredient" disabled></select>
+<div class="controls"><button id="interact" disabled>Interact · Space</button><button id="cook" disabled>Start appliance · E</button></div>
+<div class="pad" aria-label="Movement buttons"><button class="span" data-direction="up" aria-label="Move up" disabled>↑</button><button data-direction="left" aria-label="Move left" disabled>←</button><button data-direction="down" aria-label="Move down" disabled>↓</button><button data-direction="right" aria-label="Move right" disabled>→</button></div>
+<div class="instructions"><p><kbd>WASD</kbd> / <kbd>↑ ↓ ← →</kbd> Move and face a station.</p><p><kbd>Space</kbd> Pick up, put down, plate, or serve.</p><p><kbd>E</kbd> Start cooking, cutting, baking, or blending after loading ingredients.</p><p>Pass items on the counters between the two sides. You and the agent cooperate through actions.</p></div>
+<h2 id="order">Order</h2><div id="recipe" class="recipe"></div>
+
+</aside></div>
+<footer>The Python game server owns the shared state. Losing keyboard focus releases movement; disconnecting pauses the game.</footer>
+</main>
+<script>
+"use strict";
+const $=id=>document.getElementById(id), canvas=$("game"), ctx=canvas.getContext("2d");
+let ws, state=null, controller=false, keys=[], populatedEpisode=null, transportError="";
+const keymap={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",w:"up",s:"down",a:"left",d:"right"};
+function send(data){if(controller&&ws&&ws.readyState===WebSocket.OPEN)ws.send(JSON.stringify(data));}
+function release(){keys=[];send({type:"input",keys:[]});}
+function interact(start=false){
+ if(!state||state.paused||state.done)return;
+ const p=state.state.players[state.human_index], x=p.position[0]+p.orientation[0], y=p.position[1]+p.orientation[1];
+ const parameter=start?"[START]":state.terrain[y]?.[x]==="I"?$("ingredient").value:null;
+ send({type:"input",keys,interaction:{action:"interact",parameter}});
+}
+function connect(){
+ ws=new WebSocket(`${location.protocol==="https:"?"wss":"ws"}://${location.host}/ws`);
+ ws.onmessage=event=>{const data=JSON.parse(event.data);
+  if(data.type==="role"){controller=data.controller;$("connection").textContent=controller?"Connected · Player":"Connected · Spectator";document.querySelectorAll("button,select").forEach(el=>el.disabled=!controller);}
+  else if(data.type==="error"){transportError=data.message;$("status").textContent=transportError;}
+  else if(data.type==="state"){state=data;render();}
+ };
+ ws.onclose=()=>{keys=[];controller=false;$("connection").textContent="Disconnected";document.querySelectorAll("button,select").forEach(el=>el.disabled=true);$("status").textContent="Connection lost. Reconnecting; the game is paused.";setTimeout(connect,1500);};
+}
+function shortName(name){return String(name).replaceAll("_"," ");}
+function recipeText(item,depth=0,seen=new Set()){
+ if(seen.has(item))return "";seen.add(item);
+ const prefix="  ".repeat(depth), entry=Object.entries(state.recipes).find(([kind,r])=>kind!=="none"&&r[item]);
+ if(!entry)return `${prefix}• ${shortName(item)}\n`;
+ const [kind,recipes]=entry;
+ return `${prefix}• ${shortName(item)} — ${kind}\n`+recipes[item].recipe.map(child=>recipeText(child,depth+1,new Set(seen))).join("");
+}
+function render(){
+ const s=state.state, human=s.players[state.human_index], bot=s.players[state.agent_index];
+ $("score").textContent=state.score;$("step").textContent=`${s.timestep}/${state.horizon}`;
+ $("mode").textContent=state.done?"Finished":state.paused?"Paused":"Playing";
+ $("start").textContent=state.paused?"Start / Resume":"Pause";$("start").disabled=!controller||state.done;
+ $("role").textContent=`You are P${state.human_index} on the ${state.human_index===0?"right":"left"}. ${controller?"Click the kitchen to use the keyboard.":"This tab is watching; the first connected tab has control."}`;
+ if(populatedEpisode!==state.episode_id){
+  release();populatedEpisode=state.episode_id;$("ingredient").replaceChildren();
+  // Raw ingredients only; finished products cannot be dispensed.
+  for(const name of state.raw_ingredients){const option=document.createElement("option");option.value=name;option.textContent=shortName(name);$("ingredient").append(option);}
+  if([...$("ingredient").options].some(o=>o.value==="egg"))$("ingredient").value="egg";
+ }
+ const order=s.order_list[0];$("order").textContent=order?`Order · ${shortName(order)}`:"Order completed";
+ $("recipe").textContent=order?recipeText(order):"All orders served.";
+ for(const [role,player] of [["human",human],["agent",bot]]){
+  $(role+"-item").textContent=player.held_object?shortName(player.held_object.name):"空手 / Empty";
+  $(role+"-hand").classList.toggle("empty",!player.held_object);
+ }
+ $("status").textContent=transportError||state.input_notice||state.errors.join(" ")||(state.done?(s.order_list.length?"Time is up.":"Order completed. Great teamwork!"):state.paused?"Ready when you are.":"Agent: "+state.policy_status);
+ const size=canvas.width/state.terrain[0].length;
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ const tiles={X:["#425660","COUNTER"],I:["#65704c","INGREDIENTS"],D:["#546e87","DISHES"],S:["#795c36","SERVE"],P:["#565b73","POT"],C:["#806548","CUT"],O:["#76504f","OVEN"],B:["#4c7169","BLENDER"]};
+ state.terrain.forEach((row,y)=>row.forEach((tile,x)=>{
+  const [color,label]=tiles[tile]||["#22343e",""];ctx.fillStyle=color;ctx.fillRect(x*size+3,y*size+3,size-6,size-6);
+  ctx.fillStyle="#e4edf0";ctx.font=`600 ${size*.09}px system-ui`;ctx.textAlign="center";ctx.fillText(label,(x+.5)*size,(y+.17)*size);
+ }));
+ for(const obj of s.objects){const [x,y]=obj.position;ctx.fillStyle="#ffdf9e";ctx.font=`${size*.095}px system-ui`;const text=shortName(obj.name);const words=text.match(/.{1,18}(?:\s|$)|.{1,18}/g)||[text];words.slice(0,3).forEach((line,i)=>ctx.fillText(line,(x+.5)*size,(y+.5+i*.13)*size));
+  if(obj.state){ctx.fillStyle="#d0e6ee";ctx.font=`${size*.08}px system-ui`;ctx.fillText(Array.isArray(obj.state[0])?"Loaded: "+obj.state[0].length:`${obj.state[2]} / ${state.recipes[Object.keys(state.recipes).find(k=>state.recipes[k][obj.state[0]])]?.[obj.state[0]]?.cook_time??"?"}`,(x+.5)*size,(y+.87)*size);}
+ }
+ s.players.forEach((p,index)=>{const [x,y]=p.position, color=index===state.human_index?"#f3b759":"#7dc8db";ctx.fillStyle=color;ctx.beginPath();ctx.arc((x+.5)*size,(y+.48)*size,size*.24,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#17232a";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo((x+.5)*size,(y+.48)*size);ctx.lineTo((x+.5+p.orientation[0]*.2)*size,(y+.48+p.orientation[1]*.2)*size);ctx.stroke();ctx.fillStyle="#f2f7f8";ctx.font=`600 ${size*.10}px system-ui`;ctx.fillText(index===state.human_index?"YOU":"AGENT",(x+.5)*size,(y+.86)*size);});
+ // Draw held objects above their chef so they remain visible while playing.
+ s.players.forEach(p=>{
+  if(!p.held_object)return;
+  const [x,y]=p.position, text=shortName(p.held_object.name);
+  ctx.font=`600 ${size*.10}px system-ui`;
+  const width=Math.min(size*.94,ctx.measureText(text).width+size*.12), left=(x+.5)*size-width/2, top=(y+.02)*size;
+  ctx.fillStyle="#10191f";ctx.fillRect(left,top,width,size*.22);
+  ctx.strokeStyle="#ffdf9e";ctx.lineWidth=1;ctx.strokeRect(left,top,width,size*.22);
+  ctx.fillStyle="#ffdf9e";ctx.textAlign="center";ctx.fillText(text,(x+.5)*size,top+size*.155,width-size*.06);
+ });
+}
+document.addEventListener("keydown",event=>{
+ if(event.target.matches("select,input,textarea,button")||!controller)return;
+ const key=keymap[event.key]||keymap[event.key.toLowerCase()];
+ if(key){event.preventDefault();if(!keys.includes(key))keys.push(key);send({type:"input",keys});}
+ else if(event.code==="Space"||event.key.toLowerCase()==="e"){event.preventDefault();if(!event.repeat)interact(event.key.toLowerCase()==="e");}
+});
+document.addEventListener("keyup",event=>{const key=keymap[event.key]||keymap[event.key.toLowerCase()];if(key){keys=keys.filter(k=>k!==key);send({type:"input",keys});}});
+window.addEventListener("blur",release);document.addEventListener("visibilitychange",()=>{if(document.hidden)release();});
+$("start").onclick=()=>{release();send({type:state?.paused?"start":"pause"});canvas.focus();};
+$("reset").onclick=()=>{release();transportError="";send({type:"reset"});canvas.focus();};
+$("interact").onclick=()=>{interact();canvas.focus();};$("cook").onclick=()=>{interact(true);canvas.focus();};
+document.querySelectorAll("[data-direction]").forEach(button=>{button.onpointerdown=event=>{event.preventDefault();button.setPointerCapture(event.pointerId);keys=[button.dataset.direction];send({type:"input",keys});};button.onpointerup=release;button.onpointercancel=release;});
+setInterval(()=>{if(controller&&keys.length)send({type:"input",keys});},100);
+connect();
+</script></body></html>

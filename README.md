@@ -19,6 +19,28 @@ We believe these changes will greatly enhance your experience working with our c
 
 ## Getting Started
 
+### Play with an agent teammate
+
+The optional browser mode lets a human control either chef with the keyboard
+while an agent operates the other chef. It uses the existing Python game engine
+and does not require the benchmark's embedding models or API keys.
+
+```bash
+pip install -r requirements-human.txt
+pip install -e lib/overcooked_ai
+python src/human_play.py --order boiled_egg
+```
+
+Open <http://127.0.0.1:8080>, then press **Start / Resume**. Use **WASD / arrows**
+to move, **Space** to interact, and **E** to start a loaded appliance. Select the
+ingredient before using its dispenser. Items can be passed on shared counters;
+there is no chat channel between the human and the agent.
+
+The default teammate is a deterministic recipe baseline. A chat-completions
+model server or custom HTTP policy can be selected without blocking keyboard
+input. See [human-agent play](docs/human-play.md) for setup, protocol, recording,
+and validation. The original `src/main.py` benchmark entry point is unchanged.
+
 ### Install
 We recommend using the anaconda management environment. Python 3.8 is recommended for this project.  
 - Install requirements
