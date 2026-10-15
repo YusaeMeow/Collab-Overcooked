@@ -663,6 +663,11 @@ class OvercookedGridworld(object):
             non_zero_items = [item for item, prob in zip(items, probabilities) if prob > 0]
             non_zero_probabilities = [prob for prob in probabilities if prob > 0]
 
+            # An empty distribution disables replenishment (e.g. a finite
+            # human-play order list). random.choices cannot sample an empty list.
+            if not non_zero_items:
+                return start_order_list
+
             # Normalize probabilities
             total_prob = sum(non_zero_probabilities)
             normalized_probabilities = [prob / total_prob for prob in non_zero_probabilities]

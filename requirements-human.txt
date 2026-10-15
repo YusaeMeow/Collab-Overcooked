@@ -1,0 +1,5 @@
+# Optional browser-play dependencies; the benchmark requirements are unchanged.
+aiohttp>=3.9,<4
+numpy>=1.21,<2
+gym>=0.21,<0.27
+tqdm
